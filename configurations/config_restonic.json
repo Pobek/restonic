@@ -1,5 +1,5 @@
 {
-    "datapower_rest_url" : "http://localhost:5554/",
+    "datapower_rest_url" : "https://localhost:5554/mgmt/",
     "credentials" : {
         "username" : "admin",
         "password" : "admin"
