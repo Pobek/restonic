@@ -9,6 +9,5 @@ config = Config().config
 auth = (config["credentials"]["username"], config["credentials"]["password"])
 
 @click.command()
-def create_mpgw():
-    """ This command creates a Multi-Protocol-Gateway """
-    click.echo("Creating mpgw")
+def create_mq_qm():
+    click.echo("Creating QM Object : ")
