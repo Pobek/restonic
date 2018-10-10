@@ -14,7 +14,7 @@ auth = (config["credentials"]["username"], config["credentials"]["password"])
 @click.argument('name')
 @click.argument('listen_address')
 @click.argument('listen_port')
-def create_http_fsh(name, listen_address, listen_port, domain, state, file):
+def create_http_fsh(name, listen_address, listen_port, domain, state):
     """ This command creates an HTTP Front side handler """
     click.echo("Creating a new HTTP FSH : {0}".format(name))
     http_fsh_object = {
@@ -56,7 +56,7 @@ def create_http_fsh(name, listen_address, listen_port, domain, state, file):
 @click.argument('name')
 @click.argument('queue_manager')
 @click.argument('queue_name')
-def create_mq_fsh(name, queue_manager, queue_name, domain, state, parse_properties, file, async_put):
+def create_mq_fsh(name, queue_manager, queue_name, domain, state, parse_properties, async_put):
     """ This command creates an IBM MQ Front sider handler """
     click.echo("Creating a new MQ FSH : {0}".format(name))
     mq_fsh_object = {
