@@ -20,6 +20,8 @@ def create_mq_qm(object_name, queue_manager_ip, queue_manager_port, queue_manage
     click.echo("Creating QM Object : {0}".format(object_name))
     mqqm_object = {
         "MQQM" : {
+            "name" : str(object_name),
+            "mAdminState" : str(state),
             "HostName" : "{0}:{1}".format(queue_manager_ip, queue_manager_port),
             "QMName" : str(queue_manager_name),
             "CCSID" : 819,
@@ -42,9 +44,7 @@ def create_mq_qm(object_name, queue_manager_ip, queue_manager_port, queue_manage
             "LongRetryInterval" : 1800,
             "ReportingInterval" : 1,
             "AlternateUser" : "on",
-            "SSLClientConfigType" : "proxy",
-            "mAdminState" : str(state),
-            "name" : str(object_name)
+            "SSLClientConfigType" : "proxy"
         }
     }
     click.echo(mqqm_object)

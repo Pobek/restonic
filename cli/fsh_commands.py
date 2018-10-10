@@ -19,6 +19,8 @@ def create_http_fsh(name, listen_address, listen_port, domain, state):
     click.echo("Creating a new HTTP FSH : {0}".format(name))
     http_fsh_object = {
         "HTTPSourceProtocolHandler" : {
+            "name" : str(name),
+            "mAdminState" : str(state),
             "AllowedFeatures" : {
                 "CONNECT" : "off",
                 "CmdExe" : "off",
@@ -39,9 +41,7 @@ def create_http_fsh(name, listen_address, listen_port, domain, state):
             "HTTPVersion" : "HTTP/1.1",
             "LocalAddress" : str(listen_address),
             "LocalPort" : str(listen_port),
-            "PersistentConnections" : "on",
-            "mAdminState" : str(state),
-            "name" : str(name)
+            "PersistentConnections" : "on"
         }
     }
     link = str(config["datapower_rest_url"]) + "config/"+ str(domain) +"/HTTPSourceProtocolHandler"
@@ -61,6 +61,8 @@ def create_mq_fsh(name, queue_manager, queue_name, domain, state, parse_properti
     click.echo("Creating a new MQ FSH : {0}".format(name))
     mq_fsh_object = {
         "MQSourceProtocolHandler" : {
+            "name" : str(name),
+            "mAdminState" : str(state),
             "QueueManager" : str(queue_manager),
             "GetQueue" : str(queue_name),
             "CodePage" : 1204,
@@ -80,9 +82,7 @@ def create_mq_fsh(name, queue_manager, queue_name, domain, state, parse_properti
             "BatcjSize" : 0,
             "ContentTypeHeader" : "None",
             "RetrieveBackoutSettings" : "off",
-            "UseQMNameInURL" : "off",
-            "mAdminState" : str(state),
-            "name" : str(name)
+            "UseQMNameInURL" : "off"
         }
     }
     click.echo(mq_fsh_object)
