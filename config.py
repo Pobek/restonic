@@ -1,14 +1,10 @@
 import os
 import codecs
 import json
+import click
 
 class Config:
     """ Represents the selected environment configuration
-        There are 3 possible environments:
-        1) dev
-        2) test
-        3) prod
-        Each environmet has each own config file, so the default config wont be long.
     """
 
     CONFIG_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configurations")
@@ -17,6 +13,22 @@ class Config:
         self.config = self.load_config()
 
     def load_config(self):
-        with codecs.open(os.path.join(self.CONFIG_PATH, "config_restonic.json"), "r", "utf-8") as json_file:
-            return json.load(json_file) 
+        try:
+            with codecs.open(os.path.join(self.CONFIG_PATH, "config_restonic.json"), "r", "utf-8") as json_file:
+                return json.load(json_file) 
+        except Exception as ex:
+            click.echo("Could not find 'config_restornic.json' configuration. An example one has been created")
+            self.generate_config()
+            return self.load_config()
         
+    def generate_config(self):
+        config_example = {
+            "comment" : "An example file",
+            "datapower_rest_url" : "https://localhost:5554/mgmt/",
+            "credentials" : {
+                "username" : "admin",
+                "password" : "admin"
+            }
+        }
+        with codecs.open(os.path.join(self.CONFIG_PATH, "config_restonic.json"), "w", "utf-8") as json_file:
+            json.dump(config_example, json_file, sort_keys=True, indent=4, ensure_ascii=False)

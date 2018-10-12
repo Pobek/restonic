@@ -1,7 +1,8 @@
 {
-    "datapower_rest_url" : "https://localhost:5554/mgmt/",
-    "credentials" : {
-        "username" : "admin",
-        "password" : "admin"
-    }
+    "comment": "An example file",
+    "credentials": {
+        "password": "admin",
+        "username": "admin"
+    },
+    "datapower_rest_url": "https://localhost:5554/mgmt/"
 }
