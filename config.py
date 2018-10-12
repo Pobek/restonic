@@ -17,7 +17,7 @@ class Config:
             with codecs.open(os.path.join(self.CONFIG_PATH, "config_restonic.json"), "r", "utf-8") as json_file:
                 return json.load(json_file) 
         except Exception as ex:
-            click.echo("Could not find 'config_restornic.json' configuration. An example one has been created")
+            click.secho("Could not find 'config_restornic.json' configuration. An example one has been created", fg="red")
             self.generate_config()
             return self.load_config()
         
