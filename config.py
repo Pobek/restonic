@@ -8,6 +8,8 @@ class Config:
     """
 
     CONFIG_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configurations")
+    if not os.path.exists(CONFIG_PATH):
+        os.mkdir(CONFIG_PATH)
 
     def __init__(self):
         self.config = self.load_config()
