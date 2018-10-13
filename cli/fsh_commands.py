@@ -85,7 +85,6 @@ def create_mq_fsh(name, queue_manager, queue_name, domain, state, parse_properti
             "UseQMNameInURL" : "off"
         }
     }
-    click.echo(mq_fsh_object)
     link = str(config["datapower_rest_url"]) + "config/"+ str(domain) +"/MQSourceProtocolHandler"
     response = requests.post(url=link, data=json.dumps(mq_fsh_object), auth=auth, verify=False)
     click.echo("{0} -- {1}".format(response.status_code, response.reason))

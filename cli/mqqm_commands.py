@@ -47,7 +47,6 @@ def create_mq_qm(object_name, queue_manager_ip, queue_manager_port, queue_manage
             "SSLClientConfigType" : "proxy"
         }
     }
-    click.echo(mqqm_object)
     link = str(config["datapower_rest_url"]) + "config/"+ str(domain) +"/MQQM"
     response = requests.post(url=link, data=json.dumps(mqqm_object), auth=auth, verify=False)
     click.echo("{0} -- {1}".format(response.status_code, response.reason))
