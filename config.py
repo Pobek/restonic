@@ -1,4 +1,5 @@
 import os
+import sys
 import codecs
 import json
 import click
@@ -7,7 +8,7 @@ class Config:
     """ Represents the selected environment configuration
     """
 
-    CONFIG_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "configurations")
+    CONFIG_PATH = os.path.join(os.path.dirname(sys.argv[0]), "configurations")
     if not os.path.exists(CONFIG_PATH):
         os.mkdir(CONFIG_PATH)
 
