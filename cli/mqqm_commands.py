@@ -1,4 +1,4 @@
-import click
+from cli import click
 import requests
 import json
 import urllib3
