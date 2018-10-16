@@ -4,3 +4,4 @@ configurations/
 build/
 dist/
 *.spec
+*.pyc
