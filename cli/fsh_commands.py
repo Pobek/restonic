@@ -4,18 +4,30 @@ import json
 import urllib3
 from config import Config
 
-config = Config().config
-auth = (config["credentials"]["username"], config["credentials"]["password"])
+config = Config()
 
 @click.command()
-@click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
+@click.option('--state', type=click.Choice(['enabled', 'disabled']), default="enabled", help='Set the state of the object', show_default=True)
+@click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers or the word 'all' to target everything in the config file. ")
+@click.option('--env-target', help="Set the target of the command. Could either be a single datapower environment, a list of datapower environments or the word 'all' to target everything in the config file. ")
 @click.argument('name')
 @click.argument('listen_address')
 @click.argument('listen_port')
 @click.argument('domain_name')
-def create_http_fsh(name, listen_address, listen_port, domain_name, state):
+def create_http_fsh(name, listen_address, listen_port, domain_name, state, dp_target, env_target):
     """ This command creates an HTTP Front side handler """
     click.echo("Creating a new HTTP FSH : {0}".format(name))
+
+    dp_object = None
+
+    if (not dp_target is None and not env_target is None) or (dp_target is None and not env_target is None):
+        dp_object = config.config[env_target]
+    elif not dp_target is None and env_target is None:
+        dp_object = config.get_dp_object_from_dp_name(dp_target)
+    else:
+        click.secho("The option '--dp-target' or '--env-target' must be initialized to use this command.", fg='red') 
+        return
+    
     http_fsh_object = {
         "HTTPSourceProtocolHandler" : {
             "name" : str(name),
@@ -43,9 +55,18 @@ def create_http_fsh(name, listen_address, listen_port, domain_name, state):
             "PersistentConnections" : "on"
         }
     }
-    link = str(config["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
-    response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
-    click.echo("{0} -- {1}".format(response.status_code, response.reason))
+
+    if isinstance(dp_object, dict):
+        auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
+        link = str(dp_object["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
+        response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
+        click.echo("{0} -- {1}".format(response.status_code, response.reason))
+    elif isinstance(dp_object, list):
+        for datapower in dp_object:
+            auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
+            link = str(datapower["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
+            response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
+            click.echo("datapower : {0}, {1} -- {2}".format(datapower["name"], response.status_code, response.reason))
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
