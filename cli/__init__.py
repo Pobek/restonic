@@ -14,7 +14,7 @@ def restonic():
 
 #restonic.add_command(create_mpgw)
 restonic.add_command(create_http_fsh)
-#restonic.add_command(create_mq_fsh)
+restonic.add_command(create_mq_fsh)
 #restonic.add_command(create_mq_qm)
 #restonic.add_command(save_config)
 #restonic.add_command(create_policy)
