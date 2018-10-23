@@ -3,8 +3,7 @@ import requests
 import json
 from config import Config
 
-config = Config().config
-auth = (config["credentials"]["username"], config["credentials"]["password"])
+config = Config()
 
 @click.command()
 def create_policy():
