@@ -12,15 +12,15 @@ The main purpose for 'Restonic' is to be reliable for managing a cluster of data
 
 ## config.py
 
-- Refactor the configuration file to be able to have multiple datapowers from multiple environments
-- Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands
+- <del>Refactor the configuration file to be able to have multiple datapowers from multiple environments </del>
+- <del>Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands</del>
 
 ## commands 
 
-- Add an option to specify which datapower apply the command to. 
+- <del>Add an option to specify which datapower apply the command to. 
 For example: when the option '--machine' is used, check if the given value exists within the configuration as a datapower.
 In case the given value is 'all', apply the command to all of the datapowers from the configuration file.
-If the given value isnt a datapower or the word 'all', return an error message.
+If the given value isnt a datapower or the word 'all', return an error message.</del>
 
 ## mpgw_commands.py
 
