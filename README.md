@@ -16,12 +16,14 @@ When you want to use Restonic for production use, there are some steps I recomme
 
 1. Create a directory to keep the executable in
 2. Either add the directory to the `$PATH` variable or move the previously created directory under an existed directory within the `$PATH` variable. Example:
-**Linux**: 
-    ```mkdir /opt/restonic```
-    ```export PATH=/opt/restonic:$PATH```
-**Windows**:
-    ```mkdir C:\Program Files\Restonic```
-    ```set PATH=%PATH%;C:\Program Files\Restonic```
+
+    **Linux**: 
+        ```mkdir /opt/restonic```
+        ```export PATH=/opt/restonic:$PATH```
+
+    **Windows**:
+        ```mkdir C:\Program Files\Restonic```
+        ```set PATH=%PATH%;C:\Program Files\Restonic```
 3. Run restonic for the first time without any command. This will initialize the configuration folder in the same directory where the application was executed.Therefore, adding the directory to the path and running from there is highly recommended.
 
 ### Using the source code
