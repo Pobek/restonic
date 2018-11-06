@@ -1,4 +1,4 @@
-from cli import click
+from restonic_commands import click
 import requests
 import json
 from config import Config
