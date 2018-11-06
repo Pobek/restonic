@@ -14,8 +14,8 @@ The main purpose for 'Restonic' is to be reliable for managing a cluster of data
 
 When you want to use Restonic for production use, there are some steps I recommend doing before.
 
-1. create a directory to keep the executable in
-2. either add the directory to the `$PATH` variable or move the previously created directory under an existed directory within the `$PATH` variable. Example:
+1. Create a directory to keep the executable in
+2. Either add the directory to the `$PATH` variable or move the previously created directory under an existed directory within the `$PATH` variable. Example:
 **Linux**: 
     ```mkdir /opt/restonic```
     ```export PATH=/opt/restonic:$PATH```
