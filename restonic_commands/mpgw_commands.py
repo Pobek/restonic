@@ -35,15 +35,7 @@ def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, re
         click.secho("The response type is not among the permitted types. Use --help to view possible types.", fg='red')
         return
 
-    dp_object = None
-
-    if (not dp_target is None and not env_target is None) or (dp_target is None and not env_target is None):
-        dp_object = config.config[env_target]
-    elif not dp_target is None and env_target is None:
-        dp_object = config.get_dp_object_from_dp_name(dp_target)
-    else:
-        click.secho("The option '--dp-target' or '--env-target' must be initialized to use this command.", fg='red') 
-        return
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
 
     click.secho("Creating MPGW : {0}".format(mpgw_name), fg='yellow')
 

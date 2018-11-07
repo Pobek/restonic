@@ -1,4 +1,5 @@
 from restonic_commands import click
+from restonic_tools import tools
 import requests
 import json
 import urllib3
@@ -18,15 +19,7 @@ def create_http_fsh(name, listen_address, listen_port, domain_name, state, dp_ta
     """ This command creates an HTTP Front side handler """
     click.echo("Creating a new HTTP FSH : {0}".format(name))
 
-    dp_object = None
-
-    if (not dp_target is None and not env_target is None) or (dp_target is None and not env_target is None):
-        dp_object = config.config[env_target]
-    elif not dp_target is None and env_target is None:
-        dp_object = config.get_dp_object_from_dp_name(dp_target)
-    else:
-        click.secho("The option '--dp-target' or '--env-target' must be initialized to use this command.", fg='red') 
-        return
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
     
     http_fsh_object = {
         "HTTPSourceProtocolHandler" : {
@@ -82,15 +75,7 @@ def create_mq_fsh(name, queue_manager, queue_name, domain_name, state, dp_target
     """ This command creates an IBM MQ Front sider handler """
     click.echo("Creating a new MQ FSH : {0}".format(name))
 
-    dp_object = None
-
-    if (not dp_target is None and not env_target is None) or (dp_target is None and not env_target is None):
-        dp_object = config.config[env_target]
-    elif not dp_target is None and env_target is None:
-        dp_object = config.get_dp_object_from_dp_name(dp_target)
-    else:
-        click.secho("The option '--dp-target' or '--env-target' must be initialized to use this command.", fg='red') 
-        return
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
 
     mq_fsh_object = {
         "MQSourceProtocolHandler" : {

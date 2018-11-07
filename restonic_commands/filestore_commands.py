@@ -16,15 +16,7 @@ config = Config()
 def list_directory(target_directory, domain_name, dp_target, env_target, file_target):
     """ This command lets you manipulate files from the datapower """
 
-    dp_object = None
-
-    if (not dp_target is None and not env_target is None) or (dp_target is None and not env_target is None):
-        dp_object = config.config[env_target]
-    elif not dp_target is None and env_target is None:
-        dp_object = config.get_dp_object_from_dp_name(dp_target)
-    else:
-        click.secho("The option '--dp-target' or '--env-target' must be initialized to use this command.", fg='red') 
-        return
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
 
     if isinstance(dp_object, dict):
         click.secho("Searching for directory '{0}'".format(target_directory))
