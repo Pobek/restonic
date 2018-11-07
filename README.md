@@ -40,20 +40,20 @@ To make ```restonic.py``` an executable, you can use this command:
 
 ### config.py
 
-- ~~Refactor the configuration file to be able to have multiple datapowers from multiple environments~~
-- ~~Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands~~
+- [x] Refactor the configuration file to be able to have multiple datapowers from multiple environments
+- [x] Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands
 
 ### commands
 
-- ~~Add an option to specify which datapower apply the command to. For example: when the option '--machine' is used, check if the given value exists within the configuration as a datapower. In case the given value is 'all', apply the command to all of the datapowers from the configuration file.If the given value isnt a datapower or the word 'all', return an error message.~~
-- Pass config object as context variable and not as Gloal variable.
-- Add a command for manipulating files on the datapower.
+- [x] Add an option to specify which datapower apply the command to. For example: when the option '--machine' is used, check if the given value exists within the configuration as a datapower. In case the given value is 'all', apply the command to all of the datapowers from the configuration file.If the given value isnt a datapower or the word 'all', return an error message.
+- [ ] Pass config object as context variable and not as Gloal variable.
+- [ ] Add a command for manipulating files on the datapower.
 
 ### mpgw_commands.py
 
-- Create a function that returns a list of MultiProtocol Gateways Names from a specific datapower / environment / all of them.
-- Create a function that modifies a given MultiProtocol Gateway.
+- [ ] Create a function that returns a list of MultiProtocol Gateways Names from a specific datapower / environment / all of them.
+- [ ] Create a function that modifies a given MultiProtocol Gateway.
 
 ### filestore_commands.py
 
-- Create a function that returns the content of a given directory
+- [ ] Create a function that returns the content of a given directory
