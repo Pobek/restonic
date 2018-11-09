@@ -17,7 +17,7 @@ When you want to use Restonic for production use, there are some steps I recomme
 1. Create a directory to keep the executable in
 2. Either add the directory to the `$PATH` variable or move the previously created directory under an existed directory within the `$PATH` variable. Example:
 
-    **Linux**: 
+    **Linux**:
         ```mkdir /opt/restonic```
         ```export PATH=/opt/restonic:$PATH```
 
@@ -30,11 +30,9 @@ When you want to use Restonic for production use, there are some steps I recomme
 
 In case you want to compile Restonic for yourself, all you need to do is to install ```python3```, ```pip3``` and use ```pip3 install pyinstaller``` so you can make ```restonic.py``` an executable.
 
-To make ```restonic.py``` an executable, you can use this command:
-``` pyinstaller --onefile restonic.py```
+To make ```restonic.py``` an executable, you can use this command:```pyinstaller --onefile restonic.py```
 
 >Note: When using the command, it will make an executable that will only run on the same operating system as the one who will execute it. When compiling in Linux, only Linux distrobution operating systems will be able to run the output file and Vise Versa for Windows.
-
 
 ## Todo
 
