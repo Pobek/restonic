@@ -2,11 +2,15 @@ from restonic_commands import click
 from restonic_tools import tools
 import requests
 import json
+import time
+import codecs
+import os
 from config import Config
 
 config = Config()
 
 request_respone_list = ['preprocessed', 'unprocessed', 'xml', 'json', 'soap']
+export_types = ["json", "xml", "zip"]
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
@@ -22,17 +26,17 @@ request_respone_list = ['preprocessed', 'unprocessed', 'xml', 'json', 'soap']
 @click.argument('request-type', help="The type of the request being sent to the mpgw. must contain a value out of this list :[\'preprocessed\', \'unprocessed\', \'xml\', \'json\', \'soap\']")
 @click.argument('response-type', help="The type of the response being sent from the mpgw. must contain a value out of this list :[\'preprocessed\', \'unprocessed\', \'xml\', \'json\', \'soap\']")
 @click.argument('policy-name', help="The name of the Policy to be attached to this MPGW (Must be an existing Policy)")
-@click.argument('domain-name')
+@click.argument('domain-name', help="The domain name that the object will be created at")
 def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, response_type, policy_name, domain_name, state, dp_target, env_target, xml_manager, host_rewrite, propagate_uri):
     """ This command creates a Multi-Protocol-Gateway
         
         Note: The 'backend_type' is an option but it is highly recommended to set a type. In case the 'backend_type' is 'static', use the option 'backend_url' as well or else the default value will be applied instead.
     """
 
-    if not any(request_type in req for req in request_respone_list):
+    if not any(request_type.lower() in req for req in request_respone_list):
         click.secho("The request type is not among the permitted types. Use --help to view possible types.", fg='red')
         return
-    elif not any(response_type in res for res in request_respone_list):
+    elif not any(response_type.lower() in res for res in request_respone_list):
         click.secho("The response type is not among the permitted types. Use --help to view possible types.", fg='red')
         return
 
@@ -101,3 +105,66 @@ def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, re
                 click.secho('Success - MPGW {0} has been created for {1}!.'.format(mpgw_name, datapower["name"]), fg='green')
             else:
                 click.secho('Failure - MPGW {0} could not been created for {1}!. error: {2}.'.format(mpgw_name, datapower["name"], response.json()['error']), fg='red')
+
+@click.command()
+@click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers. ")
+@click.option('--env-target', help="Set the target of the command. Could either be a single datapower environment, a list of datapower environments. ")
+@click.option('--all-files', is_flag=True, help="Set whether to export all the files associated with said MultiProtocol Gateway.")
+@click.option('--include-internal-files', is_flag=True, help="Set whether to export all internal files associated with said MultiProtocol Gateway.")
+@click.argument('mpgw-target', help="Said MultiProtocol Gateway to be exported.")
+@click.argument('export-type', help="Which file type save the exported object as.")
+@click.argument('directory-path', help="A path to either an existing file or an non-existing file that will hold the exported content.")
+@click.argument('domain-name', help="The domain name that said MultiProtocol Gateway exists.")
+def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target, env_target, all_files, include_internal_files):
+    """ This command lets you export said MultiProtocol Gateway as either
+    one of these options: JSON | XML | ZIP """
+    if not any(export_type.lower() in export for export in export_types):
+        click.secho("The export type is not among the permitted types. Use --help to view possible types.", fg='red')
+        return
+
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
+
+    click.secho("Exporting MultiProtocol Gateway : '{0}' to '{1}' as a {2} file...".format(mpgw_target, directory_path, export_type.title()), fg='yellow')
+
+    export_request_object = {
+        "Export" : {
+            "Format" : str(export_type).upper(),
+            "AllFiles" : str("on" if all_files else "off"),
+            "IncludeInternalFiles" : str("on" if include_internal_files else "off"),
+            "Object" : {
+                "class" : "MultiProtocolGateway",
+                "name" : str(mpgw_target),
+                "ref-objects" : "on"
+            }
+        }
+    }
+
+    if isinstance(dp_object, dict):
+        auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
+        link = str(dp_object["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
+        action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
+        if int(int(action_response.status_code) / 100) == 2:
+            exported_url = str(dp_object["datapower_rest_url"]) + str(action_response.json()["_links"]["location"]["href"])[6:]
+            time.sleep(1)
+            export_response = requests.get(url=exported_url, auth=auth, verify=False).json()["result"]
+            file_name = os.path.join(directory_path, str(mpgw_target + "_MPGW_Export.json"))
+            with codecs.open(file_name, "w", "utf-8") as w_file:
+                json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+            click.secho("Success - Exported '{0}' to '{1}'.".format(mpgw_target, file_name), fg='green')
+        else:
+            click.secho("Failure - Could'nt export '{0}'. error: {1}.".format(mpgw_target, action_response.json()['error']), fg='red')
+    elif isinstance(dp_object, list):
+        for datapower in dp_object:
+            auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
+            link = str(datapower["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
+            action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
+            if int(int(action_response.status_code) / 100) == 2:
+                exported_url = str(datapower["datapower_rest_url"]) + str(action_response.json()["_links"]["location"]["href"])[6:]
+                time.sleep(1)
+                export_response = requests.get(url=exported_url, auth=auth, verify=False).json()["result"]
+                file_name = os.path.join(directory_path, str(mpgw_target + "_MPGW_Export_" + datapower["name"] + ".json"))
+                with codecs.open(file_name, "w", "utf-8") as w_file:
+                    json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+                click.secho("Datapower {0} : Success - Exported '{1}' to '{2}'.".format(datapower["name"], mpgw_target, file_name), fg='green')
+            else:
+                click.secho("Datapower {0} : Failure - Could'nt export '{1}'. error: {2}.".format(datapower["name"], mpgw_target, action_response.json()['error']), fg='red')
