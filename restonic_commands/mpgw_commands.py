@@ -113,7 +113,7 @@ def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, re
 @click.option('--include-internal-files', is_flag=True, help="Set whether to export all internal files associated with said MultiProtocol Gateway.")
 @click.argument('mpgw-target', help="Said MultiProtocol Gateway to be exported.")
 @click.argument('export-type', help="Which file type save the exported object as.")
-@click.argument('directory-path', help="A path to either an existing file or an non-existing file that will hold the exported content.")
+@click.argument('directory-path', help="A path to a directory that will hold the exported content.")
 @click.argument('domain-name', help="The domain name that said MultiProtocol Gateway exists.")
 def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target, env_target, all_files, include_internal_files):
     """ This command lets you export said MultiProtocol Gateway as either
