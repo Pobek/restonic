@@ -143,7 +143,7 @@ def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target
         auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
         link = str(dp_object["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
         action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
-        export_response = get_exported_json_object(dp_object, action_response, auth, retries)
+        export_response = get_exported_json_object(dp_object, action_response, auth)
         if export_response != None:
             file_name = os.path.join(directory_path, str(mpgw_target + "_MPGW_Export.json"))
             with codecs.open(file_name, "w", "utf-8") as w_file:
@@ -156,7 +156,7 @@ def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target
             auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
             link = str(datapower["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
             action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
-            export_response = get_exported_json_object(datapower, action_response, auth, retries)
+            export_response = get_exported_json_object(datapower, action_response, auth)
             if export_response != None:
                 file_name = os.path.join(directory_path, str(mpgw_target + "_MPGW_Export_" + datapower["name"] + ".json"))
                 with codecs.open(file_name, "w", "utf-8") as w_file:
@@ -165,7 +165,7 @@ def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target
             else:
                 click.secho("Datapower {0} : Failure - Could'nt export '{1}'.".format(datapower["name"], mpgw_target), fg='red')
 
-def get_exported_json_object(dp_conf, action_response, auth, retries):
+def get_exported_json_object(dp_conf, action_response, auth):
     if int(int(action_response.status_code) / 100) == 2:
         exported_object_location_url = str(dp_conf["datapower_rest_url"]) + str(action_response.json()["_links"]["location"]["href"])[6:]
         time.sleep(1)
