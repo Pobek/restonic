@@ -51,7 +51,7 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 ### mpgw_commands.py
 
-- [ ] Create a function that returns a list of MultiProtocol Gateways Names from a specific datapower / environment / all of them.
+- [x] Create a function that returns a list of MultiProtocol Gateways Names from a specific datapower / environment / all of them.
 - [ ] Create a function that modifies a given MultiProtocol Gateway.
 
 ### filestore_commands.py
