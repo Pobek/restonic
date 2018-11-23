@@ -48,7 +48,7 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 ### commands
 
 - [x] Add an option to specify which datapower apply the command to. For example: when the option '--machine' is used, check if the given value exists within the configuration as a datapower. In case the given value is 'all', apply the command to all of the datapowers from the configuration file.If the given value isnt a datapower or the word 'all', return an error message.
-- [ ] Remove not-needed prints.
+- [x] Remove not-needed prints.
 - [ ] Pass config object as context variable and not as Gloal variable.
 - [x] Add a command for manipulating files on the datapower - (filestore_commands.py).
 - [ ] For each command-set, have them implement an 'export' & 'import' option.
@@ -63,9 +63,17 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 ### fsh_commands.py
 
-- [ ] Create a function that Modifies a given Front Side Handler.
-- [ ] Create a function for exporting a given Front Side Handler.
-- [ ] Create a function for importing a given Front Side Handler configuration.
+#### http
+
+- [ ] Create a function that Modifies a given HTTP Front Side Handler.
+- [x] Create a function for exporting a given HTTP Front Side Handler.
+- [ ] Create a function for importing a given HTTP Front Side Handler configuration.
+
+#### mq
+
+- [ ] Create a function that Modifies a given MQ Front Side Handler.
+- [ ] Create a function for exporting a given MQ Front Side Handler.
+- [ ] Create a function for importing a given MQ Front Side Handler configuration.
 
 ### filestore_commands.py
 
