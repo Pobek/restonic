@@ -15,8 +15,9 @@ export_types = ["json", "xml", "zip"]
 @click.command()
 @click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers. ")
 @click.option('--env-target', help="Set the target of the command. Could either be a single datapower environment, a list of datapower environments. ")
+@click.option('--path', help="A path to where to save the output.")
 @click.argument('domain-name', help="The domain name that the object will be created at")
-def list_mpgw(domain_name, dp_target, env_target):
+def list_mpgw(domain_name, dp_target, env_target, path):
     """
         This command retrieves a list of MultiProtocol Gateways from a given target.
     """
@@ -28,13 +29,21 @@ def list_mpgw(domain_name, dp_target, env_target):
         link = str(dp_object["datapower_rest_url"]) + "config/"+ str(domain_name) +"/MultiProtocolGateway"
         mpgw_list_response = requests.get(url=link, auth=auth, verify=False)
         if int(int(mpgw_list_response.status_code) / 100) == 2:
-            click.secho('Successfully retrieved a list of MPGW and their state : ', fg='green')
+            click.secho('Successfully retrieved a list of MultiProtocol Gateways', fg='green')
             mpgw_list_json = mpgw_list_response.json()["MultiProtocolGateway"]
+            mpgw_list = []
             if isinstance(mpgw_list_json, dict):
-                click.echo("{0} : {1}".format(mpgw_list_json["name"], mpgw_list_json["mAdminState"]))
+                mpgw_list.append(mpgw_list_json["name"])
             elif isinstance(mpgw_list_json, list):
                 for mpgw in mpgw_list_json:
-                    click.echo("{0} : {1}".format(mpgw["name"], mpgw["mAdminState"]))
+                    mpgw_list.append(mpgw["name"])
+            if path != None:
+                file_name = os.path.join(path, "mpgw_list.json")
+                click.secho("Saving output to '{0}' : ".format(file_name), fg='green')
+                with codecs.open(file_name, "w", "utf-8") as w_file:
+                    json.dump(mpgw_list, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+            else:
+                click.echo(str(mpgw_list))
         else:
             click.secho('Failure. error: {0}.'.format(response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
@@ -45,11 +54,19 @@ def list_mpgw(domain_name, dp_target, env_target):
             if int(int(mpgw_list_response.status_code) / 100) == 2:
                 click.secho('Datapower {0} : Successfully retrieved a list of MPGW and their state : '.format(datapower["name"]), fg='green')
                 mpgw_list_json = mpgw_list_response.json()["MultiProtocolGateway"]
+                mpgw_list = []
                 if isinstance(mpgw_list_json, dict):
-                    click.echo("{0} : {1}".format(mpgw_list_json["name"], mpgw_list_json["mAdminState"]))
+                    mpgw_list.append(mpgw_list_json["name"])
                 elif isinstance(mpgw_list_json, list):
                     for mpgw in mpgw_list_json:
-                        click.echo("{0} : {1}".format(mpgw["name"], mpgw["mAdminState"]))
+                        mpgw_list.append(mpgw["name"])
+                if path != None:
+                    file_name = os.path.join(path, datapower["name"] + "_mpgw_list.json")
+                    click.secho("Saving output to '{0}' : ".format(file_name), fg='green')
+                    with codecs.open(file_name, "w", "utf-8") as w_file:
+                        json.dump(mpgw_list, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+                else:
+                    click.echo(str(mpgw_list))
             else:
                 click.secho('Datapower {0} : Failure. error: {1}.'.format(datapower["name"], response.json()['error']), fg='red')    
 
