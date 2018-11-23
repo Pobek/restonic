@@ -2,10 +2,13 @@ from restonic_commands import click
 from restonic_tools import tools
 import requests
 import json
-import urllib3
+import codecs
+import os
 from config import Config
 
 config = Config()
+
+export_types = ["json", "xml", "zip"]
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled', 'disabled']), default="enabled", help='Set the state of the object', show_default=True)
@@ -60,6 +63,65 @@ def create_http_fsh(name, listen_address, listen_port, domain_name, state, dp_ta
             link = str(datapower["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
             response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
             click.echo("datapower : {0}, {1} -- {2}".format(datapower["name"], response.status_code, response.reason))
+
+@click.command()
+@click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers. ")
+@click.option('--env-target', help="Set the target of the command. Could either be a single datapower environment, a list of datapower environments. ")
+@click.option('--all-files', is_flag=True, help="Set whether to export all the files associated with said MultiProtocol Gateway.")
+@click.option('--include-internal-files', is_flag=True, help="Set whether to export all internal files associated with said MultiProtocol Gateway.")
+@click.argument('fsh-target', help="Said MultiProtocol Gateway to be exported.")
+@click.argument('export-type', help="Which file type save the exported object as.")
+@click.argument('directory-path', help="A path to a directory that will hold the exported content.")
+@click.argument('domain-name', help="The domain name that said MultiProtocol Gateway exists.")
+def export_http_fsh(domain_name, fsh_target, export_type, directory_path, dp_target, env_target, all_files, include_internal_files):
+    """ This command lets you export said HTTP Front Side Handler as either
+    one of these options: JSON | XML | ZIP """
+    if not any(export_type.lower() in export for export in export_types):
+        click.secho("The export type is not among the permitted types. Use --help to view possible types.", fg='red')
+        return
+
+    dp_object = tools.load_datapower_object(config, dp_target, env_target) 
+
+    click.secho("Exporting HTTP Front Side Handler : '{0}' to '{1}' as a {2} file...".format(fsh_target, directory_path, export_type.title()), fg='yellow')
+
+    export_request_object = {
+        "Export" : {
+            "Format" : str(export_type).upper(),
+            "AllFiles" : str("on" if all_files else "off"),
+            "IncludeInternalFiles" : str("on" if include_internal_files else "off"),
+            "Object" : {
+                "class" : "HTTPSourceProtocolHandler",
+                "name" : str(fsh_target),
+                "ref-objects" : "on"
+            }
+        }
+    }
+
+    if isinstance(dp_object, dict):
+        auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
+        link = str(dp_object["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
+        action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
+        export_response = tools.get_exported_json_object(dp_object, action_response, auth)
+        if export_response != None:
+            file_name = os.path.join(directory_path, str(fsh_target + "_HTTP_FSH_Export.json"))
+            with codecs.open(file_name, "w", "utf-8") as w_file:
+                json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+            click.secho("Success - Exported '{0}' to '{1}'.".format(fsh_target, file_name), fg='green')
+        else:
+            click.secho("Failure - Could'nt export '{0}'.".format(fsh_target), fg='red')
+    elif isinstance(dp_object, list):
+        for datapower in dp_object:
+            auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
+            link = str(datapower["datapower_rest_url"]) + "actionqueue/"+ str(domain_name)
+            action_response = requests.post(url=link, data=json.dumps(export_request_object), auth=auth, verify=False)
+            export_response = tools.get_exported_json_object(datapower, action_response, auth)
+            if export_response != None:
+                file_name = os.path.join(directory_path, str(fsh_target + "_HTTP_FSH_Export_" + datapower["name"] + ".json"))
+                with codecs.open(file_name, "w", "utf-8") as w_file:
+                    json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
+                click.secho("Datapower {0} : Success - Exported '{1}' to '{2}'.".format(datapower["name"], fsh_target, file_name), fg='green')
+            else:
+                click.secho("Datapower {0} : Failure - Could'nt export '{1}'.".format(datapower["name"], fsh_target), fg='red')
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
