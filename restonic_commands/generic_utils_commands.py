@@ -27,6 +27,7 @@ def save_config(domain_name, dp_target, env_target):
         click.echo("{0} -- {1}".format(response.status_code, response.reason))
         if int(int(response.status_code) / 100) == 2:
             click.secho('Success - Configuration saved.', fg='green')
+            return True
         else:
             click.secho('Failure - Configuration not saved.', fg='red')
     elif isinstance(dp_object, list):
@@ -37,5 +38,7 @@ def save_config(domain_name, dp_target, env_target):
             click.echo("{0} -- {1}".format(response.status_code, response.reason))
             if int(int(response.status_code) / 100) == 2:
                 click.secho('Success - Configuration saved for {0}.'.format(datapower["name"]), fg='green')
+                return True
             else:
                 click.secho('Failure - Configuration not saved for {0}.'.format(datapower["name"]), fg='red')
+    return False

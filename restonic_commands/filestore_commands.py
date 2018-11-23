@@ -26,14 +26,13 @@ def list_directory(target_directory, domain_name, dp_target, env_target, file_ta
             link = str(dp_object["datapower_rest_url"]) + "filestore/"+ str(domain_name) +"/"+ str(target_directory)
         else:
             link = str(dp_object["datapower_rest_url"]) + "filestore/"+ str(domain_name) +"/"+ str(target_directory)
-        click.echo(link)
         response = requests.get(url=link, auth=auth, verify=False)
         response_json = response.json()["filestore"]["location"]
-        click.echo("{0} -- {1}".format(response.status_code, response.reason))
         if not file_target is None:
             with codecs.open(file_target, 'w', 'utf-8') as w_file:
                 json.dump(response_json, w_file, sort_keys=True, indent=4, ensure_ascii=False)
             click.secho("Response saved to : '{0}'".format(file_target), fg="green")
+            return True
         else:
             click.echo("Content : {0}".format(json.dumps(response_json, sort_keys=True, indent=4)))
     elif isinstance(dp_object, list):
@@ -45,13 +44,13 @@ def list_directory(target_directory, domain_name, dp_target, env_target, file_ta
                 link = str(datapower["datapower_rest_url"]) + "filestore/"+ str(domain_name) +"/"+ str(target_directory)
             else:
                 link = str(datapower["datapower_rest_url"]) + "filestore/"+ str(domain_name) +"/"+ str(target_directory)
-            click.echo(link)
             response = requests.get(url=link, auth=auth, verify=False)
             response_json = response.json()["filestore"]["location"]
-            click.echo("{0} -- {1}".format(response.status_code, response.reason))
             if not file_target is None:
                 with codecs.open(file_target + "_" + datapower["name"], 'w', 'utf-8') as w_file:
                     json.dump(response_json, w_file, sort_keys=True, indent=4, ensure_ascii=False)
                 click.secho("Response saved to : '{0}'".format(file_target), fg="green")
+                return True
             else:
                 click.echo("Datapower {0}, Content : {1}".format(datapower["name"],json.dumps(response_json, sort_keys=True, indent=4)))
+    return False

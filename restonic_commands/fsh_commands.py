@@ -20,7 +20,7 @@ export_types = ["json", "xml", "zip"]
 @click.argument('domain_name')
 def create_http_fsh(name, listen_address, listen_port, domain_name, state, dp_target, env_target):
     """ This command creates an HTTP Front side handler """
-    click.echo("Creating a new HTTP FSH : {0}".format(name))
+    click.secho("Creating a new HTTP FSH : {0}".format(name), fg='yellow')
 
     dp_object = tools.load_datapower_object(config, dp_target, env_target) 
     
@@ -56,13 +56,22 @@ def create_http_fsh(name, listen_address, listen_port, domain_name, state, dp_ta
         auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
         link = str(dp_object["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
         response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
-        click.echo("{0} -- {1}".format(response.status_code, response.reason))
+        if int(int(response.status_code) / 100) == 2:
+            click.secho("Success - HTTP FSH {0} has been created!.".format(name), fg='green')
+            return True
+        else:
+            click.secho("Failure - HTTP FSH {0} could not been created! error: {1}.".format(name, response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
         for datapower in dp_object:
             auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
             link = str(datapower["datapower_rest_url"]) + "config/"+ str(domain_name) +"/HTTPSourceProtocolHandler"
             response = requests.post(url=link, data=json.dumps(http_fsh_object), auth=auth, verify=False)
-            click.echo("datapower : {0}, {1} -- {2}".format(datapower["name"], response.status_code, response.reason))
+            if int(int(response.status_code) / 100) == 2:
+                click.secho("Datapower {0} : Success - HTTP FSH {1} has been created!.".format(datapower["name"], name), fg='green')
+                return True
+            else:
+                click.secho("Datapower {0} : Failure - HTTP FSH {1} could not been created! error: {2}.".format(datapower["name"], name, response.json()['error']), fg='red')
+    return False
 
 @click.command()
 @click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers. ")
@@ -107,6 +116,7 @@ def export_http_fsh(domain_name, fsh_target, export_type, directory_path, dp_tar
             with codecs.open(file_name, "w", "utf-8") as w_file:
                 json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
             click.secho("Success - Exported '{0}' to '{1}'.".format(fsh_target, file_name), fg='green')
+            return True
         else:
             click.secho("Failure - Could'nt export '{0}'.".format(fsh_target), fg='red')
     elif isinstance(dp_object, list):
@@ -120,8 +130,10 @@ def export_http_fsh(domain_name, fsh_target, export_type, directory_path, dp_tar
                 with codecs.open(file_name, "w", "utf-8") as w_file:
                     json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
                 click.secho("Datapower {0} : Success - Exported '{1}' to '{2}'.".format(datapower["name"], fsh_target, file_name), fg='green')
+                return True
             else:
                 click.secho("Datapower {0} : Failure - Could'nt export '{1}'.".format(datapower["name"], fsh_target), fg='red')
+    return False
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
@@ -170,10 +182,19 @@ def create_mq_fsh(name, queue_manager, queue_name, domain_name, state, dp_target
         auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
         link = str(dp_object["datapower_rest_url"]) + "config/"+ str(domain_name) +"/MQSourceProtocolHandler"
         response = requests.post(url=link, data=json.dumps(mq_fsh_object), auth=auth, verify=False)
-        click.echo("{0} -- {1}".format(response.status_code, response.reason))
+        if int(int(response.status_code) / 100) == 2:
+            click.secho("Success - MQ FSH {0} has been created!.".format(name), fg='green')
+            return True
+        else:
+            click.secho("Failure - MQ FSH {0} could not been created! error: {1}.".format(name, response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
         for datapower in dp_object:
             auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
             link = str(datapower["datapower_rest_url"]) + "config/"+ str(domain_name) +"/MQSourceProtocolHandler"
             response = requests.post(url=link, data=json.dumps(mq_fsh_object), auth=auth, verify=False)
-            click.echo("datapower : {0}, {1} -- {2}".format(datapower["name"], response.status_code, response.reason))
+            if int(int(response.status_code) / 100) == 2:
+                click.secho("Datapower {0} : Success - MQ FSH {1} has been created!.".format(datapower["name"], name), fg='green')
+                return True
+            else:
+                click.secho("Datapower {0} : Failure - MQ FSH {1} could not been created! error: {2}.".format(datapower["name"], name, response.json()['error']), fg='red')
+    return False

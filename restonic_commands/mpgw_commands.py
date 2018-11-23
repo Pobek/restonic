@@ -43,6 +43,7 @@ def list_mpgw(domain_name, dp_target, env_target, path):
                     json.dump(mpgw_list, w_file, sort_keys=True, indent=4, ensure_ascii=False)
             else:
                 click.echo(str(mpgw_list))
+            return True
         else:
             click.secho('Failure. error: {0}.'.format(mpgw_list_response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
@@ -66,8 +67,10 @@ def list_mpgw(domain_name, dp_target, env_target, path):
                         json.dump(mpgw_list, w_file, sort_keys=True, indent=4, ensure_ascii=False)
                 else:
                     click.echo(str(mpgw_list))
+                return True
             else:
                 click.secho('Datapower {0} : Failure. error: {1}.'.format(datapower["name"], mpgw_list_response.json()['error']), fg='red')    
+    return False
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)
@@ -147,9 +150,9 @@ def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, re
         auth = (dp_object["credentials"]["username"], dp_object["credentials"]["password"])
         link = str(dp_object["datapower_rest_url"]) + "config/"+ str(domain_name) +"/MultiProtocolGateway"
         response = requests.post(url=link, data=json.dumps(mpgw_object), auth=auth, verify=False)
-        click.echo("{0} -- {1}".format(response.status_code, response.reason))
         if int(int(response.status_code) / 100) == 2:
             click.secho('Success - MPGW {0} has been created!.'.format(mpgw_name), fg='green')
+            return True
         else:
             click.secho('Failure - MPGW {0} could not been created! error: {1}.'.format(mpgw_name, response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
@@ -157,11 +160,12 @@ def create_mpgw(mpgw_name, fsh_name, backend_url, backend_type, request_type, re
             auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
             link = str(datapower["datapower_rest_url"]) + "config/"+ str(domain_name) +"/MultiProtocolGateway"
             response = requests.post(url=link, data=json.dumps(mpgw_object), auth=auth, verify=False)
-            click.echo("{0} -- {1}".format(response.status_code, response.reason))
             if int(int(response.status_code) / 100) == 2:
-                click.secho('Success - MPGW {0} has been created for {1}!.'.format(mpgw_name, datapower["name"]), fg='green')
+                click.secho('Datapower {0} : Success - MPGW {1} has been created!'.format(datapower["name"], mpgw_name), fg='green')
+                return True
             else:
-                click.secho('Failure - MPGW {0} could not been created for {1}!. error: {2}.'.format(mpgw_name, datapower["name"], response.json()['error']), fg='red')
+                click.secho('Datapower {0} : Failure - MPGW {1} could not been created ! error: {2}.'.format(datapower["name"], mpgw_name, response.json()['error']), fg='red')
+    return False
 
 @click.command()
 @click.option('--dp-target', help="Set the target of the command. Could either be a single datapower, a list of datapowers. ")
@@ -206,6 +210,7 @@ def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target
             with codecs.open(file_name, "w", "utf-8") as w_file:
                 json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
             click.secho("Success - Exported '{0}' to '{1}'.".format(mpgw_target, file_name), fg='green')
+            return True
         else:
             click.secho("Failure - Could'nt export '{0}'.".format(mpgw_target), fg='red')
     elif isinstance(dp_object, list):
@@ -219,5 +224,7 @@ def export_mpgw(domain_name, mpgw_target, export_type, directory_path, dp_target
                 with codecs.open(file_name, "w", "utf-8") as w_file:
                     json.dump(export_response, w_file, sort_keys=True, indent=4, ensure_ascii=False)
                 click.secho("Datapower {0} : Success - Exported '{1}' to '{2}'.".format(datapower["name"], mpgw_target, file_name), fg='green')
+                return True
             else:
                 click.secho("Datapower {0} : Failure - Could'nt export '{1}'.".format(datapower["name"], mpgw_target), fg='red')
+    return False
