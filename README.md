@@ -36,14 +36,19 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 ## Todo
 
+### logging
+
+- [ ] Implement a logging mechanism.
+
 ### config.py
 
-- [x] Refactor the configuration file to be able to have multiple datapowers from multiple environments
-- [x] Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands
+- [x] Refactor the configuration file to be able to have multiple datapowers from multiple environments.
+- [x] Create a function that returns an organized list of datapowers from the configuration file for an easy use in commands.
 
 ### commands
 
 - [x] Add an option to specify which datapower apply the command to. For example: when the option '--machine' is used, check if the given value exists within the configuration as a datapower. In case the given value is 'all', apply the command to all of the datapowers from the configuration file.If the given value isnt a datapower or the word 'all', return an error message.
+- [ ] Remove not-needed prints.
 - [ ] Pass config object as context variable and not as Gloal variable.
 - [x] Add a command for manipulating files on the datapower - (filestore_commands.py).
 - [ ] For each command-set, have them implement an 'export' & 'import' option.
@@ -53,7 +58,17 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 - [x] Create a function that returns a list of MultiProtocol Gateways Names from a specific datapower / environment / all of them.
 - [ ] Create a function that modifies a given MultiProtocol Gateway.
+- [x] Create a function for exporting given MultiProtocol Gateway.
+- [ ] Create a function for importing a given MultiProtocol Gateway configuration.
+
+### fsh_commands.py
+
+- [ ] Create a function that Modifies a given Front Side Handler.
+- [ ] Create a function for exporting a given Front Side Handler.
+- [ ] Create a function for importing a given Front Side Handler configuration.
 
 ### filestore_commands.py
 
-- [x] Create a function that returns the content of a given directory
+- [x] Create a function that returns the content of a given directory.
+- [ ] Create a function for updating the content of a given file name.
+- [ ] Create a function for deleting files / directories.
