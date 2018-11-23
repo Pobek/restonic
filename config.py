@@ -25,16 +25,16 @@ class Config:
             return self.load_config()
 
     def get_environmet_from_dp_name(self, name):
-        for key, value in self.config.items():
-            if isinstance(value, list):
-                for item in value:
+        for kv_pair in self.config.items():
+            if isinstance(kv_pair[1], list):
+                for item in kv_pair[1]:
                     if item["name"] == name:
-                        return value
+                        return kv_pair[1]
 
     def get_dp_object_from_dp_name(self, name):
-        for key, value in self.config.items():
-            if isinstance(value, list):
-                for item in value:
+        for kv_pair in self.config.items():
+            if isinstance(kv_pair[1], list):
+                for item in kv_pair[1]:
                     if item["name"] == name:
                         return item
 

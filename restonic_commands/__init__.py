@@ -13,13 +13,20 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def restonic():
     pass
 
+# list Commands
 restonic.add_command(list_mpgw)
-restonic.add_command(create_mpgw)
+restonic.add_command(list_directory)
+
+# export Commands
 restonic.add_command(export_mpgw)
-restonic.add_command(create_http_fsh)
 restonic.add_command(export_http_fsh)
+
+# create Commands
+restonic.add_command(create_mpgw)
+restonic.add_command(create_http_fsh)
 restonic.add_command(create_mq_fsh)
 restonic.add_command(create_mq_qm)
-restonic.add_command(save_config)
 restonic.add_command(create_policy)
-restonic.add_command(list_directory)
+
+# general Commands
+restonic.add_command(save_config)

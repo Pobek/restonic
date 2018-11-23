@@ -44,7 +44,7 @@ def list_mpgw(domain_name, dp_target, env_target, path):
             else:
                 click.echo(str(mpgw_list))
         else:
-            click.secho('Failure. error: {0}.'.format(response.json()['error']), fg='red')
+            click.secho('Failure. error: {0}.'.format(mpgw_list_response.json()['error']), fg='red')
     elif isinstance(dp_object, list):
         for datapower in dp_object:
             auth = (datapower["credentials"]["username"], datapower["credentials"]["password"])
@@ -67,7 +67,7 @@ def list_mpgw(domain_name, dp_target, env_target, path):
                 else:
                     click.echo(str(mpgw_list))
             else:
-                click.secho('Datapower {0} : Failure. error: {1}.'.format(datapower["name"], response.json()['error']), fg='red')    
+                click.secho('Datapower {0} : Failure. error: {1}.'.format(datapower["name"], mpgw_list_response.json()['error']), fg='red')    
 
 @click.command()
 @click.option('--state', type=click.Choice(['enabled','disabled']), default="enabled", help='Set the state of the object', show_default=True)

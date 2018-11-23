@@ -2,7 +2,6 @@ from restonic_commands import click
 from restonic_tools import tools
 import requests
 import json
-import urllib3
 from config import Config
 
 config = Config()
