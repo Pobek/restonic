@@ -36,6 +36,13 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 ## Todo
 
+### Tests
+
+- [ ] Create a unittest structure.
+- [ ] Create tests for each command in each command-set.
+
+>Each unittest is going to be for each command-set (mpgw_commands, fsh_commands, etc.). Each test will create, list, export, save and delete the configuration.
+
 ### logging
 
 - [ ] Implement a logging mechanism.
