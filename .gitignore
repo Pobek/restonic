@@ -5,3 +5,4 @@ build/
 dist/
 *.spec
 *.pyc
+docs/
