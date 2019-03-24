@@ -26,7 +26,6 @@ pipeline{
        sh 'pip install --upgrade setuptools'
        sh 'pip install -v --trusted-host=pypi.python.org -r requirements.txt'
        sh 'pip install pyinstaller -v --trusted-host=pypi.python.org'
-       sh 'done'
        sh 'pyinstaller --onefile restonic.py'
      }
      post{
