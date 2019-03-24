@@ -23,7 +23,7 @@ pipeline{
        }
      }
      steps{
-       sh 'pip3 install PyInstaller'
+       sh 'pip3 install pyinstaller'
        sh 'done'
        sh 'pyinstaller --onefile restonic.py'
      }
