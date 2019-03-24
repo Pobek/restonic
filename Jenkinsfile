@@ -19,12 +19,13 @@ pipeline{
    stage('Deliver'){
      agent{
        docker{
-         image 'python:alpine'
+         image 'python:3.7.2'
        }
      }
      steps{
-       sh 'pip3 install --upgrade setuptools'
-       sh 'pip3 install pyinstaller'
+       sh 'pip install --upgrade setuptools'
+       sh 'pip install -v -r requirements.txt'
+       sh 'pip install pyinstaller --trusted-host=pypi.python.org'
        sh 'done'
        sh 'pyinstaller --onefile restonic.py'
      }
