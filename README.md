@@ -1,4 +1,3 @@
-
 # Restonic
 
 'Restonic' is an Open Source CLI tool intended to solve the Cluster-Management problem for the IBM Datapower Product.
