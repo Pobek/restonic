@@ -19,10 +19,12 @@ pipeline{
    stage('Deliver'){
      agent{
        docker{
-         image 'cdrx/pyinstaller-linux:python3'
+         image 'python:alpine'
        }
      }
      steps{
+       sh 'pip3 install PyInstaller'
+       sh 'done'
        sh 'pyinstaller --onefile restonic.py'
      }
      post{
