@@ -17,7 +17,7 @@ pipeline{
      }
    }
    stage('Deliver'){
-     agnet{
+     agent{
        docker{
          image 'cdrx/pyinstaller-linux:python3'
        }
