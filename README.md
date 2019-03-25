@@ -33,7 +33,7 @@ To make ```restonic.py``` an executable, you can use this command:```pyinstaller
 
 >Note: When using the command, it will make an executable that will only run on the same operating system as the one who will execute it. When compiling in Linux, only Linux distrobution operating systems will be able to run the output file and Vise Versa for Windows.
 
-## Todo
+## TODO
 
 ### Tests
 
